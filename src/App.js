@@ -1,25 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import {createContext, useState} from 'react'
+import './App.css'
+import MainPlate from './components/mainPlate/MainPlate'
+import NewTransactionForm from './components/NewTransactionForm/NewTransactionForm'
+
+export const GlobalContext = createContext()
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <GlobalContext.Provider value={{isOpen, setIsOpen}}>
+        <MainPlate />
+        <NewTransactionForm />
+      </GlobalContext.Provider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
