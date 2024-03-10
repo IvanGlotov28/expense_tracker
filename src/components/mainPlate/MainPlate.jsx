@@ -1,7 +1,11 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import { useSelector } from 'react-redux'
+
 import TransactionButton from '../TransactionButton/TransactionButton'
 import { mainText, mainBackgroundColor } from '../../constants/styles'
 const MainPlate = () => {
+  const moneyAmount = useSelector((state) => state.transaction)
+
   return (
     <Box
       sx={{
@@ -33,9 +37,10 @@ const MainPlate = () => {
           border: '3px solid black',
           padding: '20px',
           borderRadius: '10px',
+          gap: '10px',
         }}
       >
-        <Typography variant="h4">Total: 1000$</Typography>
+        <Typography variant="h4">Total: {moneyAmount}</Typography>
       </Box>
     </Box>
   )

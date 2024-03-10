@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useState, useContext } from 'react'
+import {  useContext } from 'react'
 
 import {GlobalContext} from '../../App'
 
@@ -13,7 +13,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const TransactionButton = () => {
   const {setIsOpen}  = useContext(GlobalContext)
 
-  console.log(setIsOpen);
 
   const handleOpenModal = () => {
     setIsOpen(true)

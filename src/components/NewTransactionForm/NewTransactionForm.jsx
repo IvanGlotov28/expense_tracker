@@ -3,57 +3,116 @@ import {
   FormControl,
   FormLabel,
   TextField,
-  Typography,
-  Checkbox,
   Dialog,
-  DialogActions,
-  DialogContent,
-  Modal,
-  // ModalContent,
-  Fade,
+  DialogTitle,
+  Button,
 } from '@mui/material'
+import { useSelector, useDispatch } from 'react-redux'
+
 import CloseIcon from '@mui/icons-material/Close'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { GlobalContext } from '../../App'
-import { useState } from 'react'
-import {
-  formLabelStyles,
-  mainBackgroundColor,
-  formBoxesStyles,
-} from '../../constants/styles'
+import { formLabelStyles, formBoxesStyles } from '../../constants/styles'
 import FormCheckboxes from './FormCheckboxes'
+import ErrorDialog from './ErrorDialog'
+import { spending, income } from '../../redux/slices/transactionSlice'
 
 const NewTransactionForm = () => {
   const { isOpen, setIsOpen } = useContext(GlobalContext)
+  const { transactionType, setTransactionType } = useContext(GlobalContext)
+  const { moneyAmount, setMoneyAmount } = useContext(GlobalContext)
+  const { description, setDescription } = useContext(GlobalContext)
+  const dispatch = useDispatch()
+  const count = useSelector((state) => state)
+  console.log(count)
+  const [showError, setShowError] = useState(false)
 
-  const handleCloseClick = () => {
-    setIsOpen(false)
+  const handleCloseClick = (value) => {
+    if (!value) {
+      return
+    } else {
+      setIsOpen(false)
+      setTransactionType('')
+    }
   }
 
-  console.log(isOpen)
+  const handleButtonClick = () => {
+    if (!transactionType) {
+      setShowError(true)
+    } else {
+      setShowError(false)
+      handleCloseClick()
+    }
+  }
   return (
-    <Modal
+    <Dialog
+      fullScreen
       open={isOpen}
       onClose={handleCloseClick}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
       sx={{
-        maxWidth: '400px',
-        margin: ['0', '15px auto'],
-        backgroundColor: mainBackgroundColor,
-        padding: '40px',
+        maxWidth: '700px',
+        margin: ['0 auto', '15px auto'],
         borderRadius: '10px',
+        height: '500px',
+      }}
+      PaperProps={{
+        component: 'form',
+        onSubmit: (event) => {
+          event.preventDefault()
+          if (!transactionType) {
+            return
+          } else {
+            const formData = new FormData(event.currentTarget)
+            const formJson = Object.fromEntries(formData.entries())
+            const money = formJson.money
+            const description = formJson.description
+            console.log(transactionType)
+
+            setMoneyAmount(money)
+            setDescription(description)
+            setTransactionType(transactionType)
+
+            transactionType === 'spending'
+              ? dispatch(spending(money))
+              : dispatch(income(money))
+
+            handleCloseClick(money)
+          }
+        },
       }}
     >
-      <Box>
-        <FormControl fullWidth>
-          <Typography
-            variant="h5"
-            sx={{
-              marginBottom: '15px',
-            }}
-          >
-            Add new transaction
-          </Typography>
-          <CloseIcon onClick={handleCloseClick} />
+      <DialogTitle
+        id="parent-modal-title"
+        variant="h5"
+        sx={{
+          margin: '15px auto 0px',
+        }}
+      >
+        Add new transaction
+      </DialogTitle>
+      <Box
+        sx={{
+          padding: '10px',
+          margin: '0 auto',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          {showError && <ErrorDialog />}
+        </Box>
+        <FormCheckboxes />
+
+        <FormControl
+          sx={{
+            width: ['300px', '400px', '500px'],
+          }}
+        >
           <Box
             sx={{
               display: 'flex',
@@ -63,17 +122,47 @@ const NewTransactionForm = () => {
           >
             <Box sx={formBoxesStyles}>
               <FormLabel sx={formLabelStyles}>Money</FormLabel>
-              <TextField placeholder="Enter the amount " type="number" />
+              <TextField
+                placeholder="Enter the amount "
+                type="number"
+                id="money"
+                name="money"
+                required
+              />
             </Box>
             <Box sx={formBoxesStyles}>
               <FormLabel sx={formLabelStyles}>Description</FormLabel>
-              <TextField placeholder="Enter a description " />
+              <TextField
+                placeholder="Enter a description "
+                id="description"
+                name="description"
+              />
             </Box>
           </Box>
+          <Button
+            type="submit"
+            onClick={handleButtonClick}
+            sx={{
+              backgroundColor: '#a2aed2',
+              color: '#1d130c',
+              width: '200px',
+              margin: '15px auto',
+            }}
+          >
+            Ok
+          </Button>
         </FormControl>
-        <FormCheckboxes />
       </Box>
-    </Modal>
+      <CloseIcon
+        onClick={handleCloseClick}
+        sx={{
+          cursor: 'pointer',
+          position: 'absolute',
+          right: '5px',
+          top: '5px',
+        }}
+      />
+    </Dialog>
   )
 }
 
