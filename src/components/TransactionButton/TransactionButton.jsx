@@ -1,8 +1,8 @@
 import { Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import {  useContext } from 'react'
+import { useContext } from 'react'
 
-import {GlobalContext} from '../../App'
+import { GlobalContext } from '../../App'
 
 const StyledButton = styled(Button)(({ theme }) => ({
   '&:hover': {
@@ -11,8 +11,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }))
 
 const TransactionButton = () => {
-  const {setIsOpen}  = useContext(GlobalContext)
-
+  const { setIsOpen } = useContext(GlobalContext)
 
   const handleOpenModal = () => {
     setIsOpen(true)
@@ -20,7 +19,7 @@ const TransactionButton = () => {
 
   return (
     <StyledButton
-      sx={{ backgroundColor: '#a2aed2', color: '#1d130c' }}
+      sx={{ backgroundColor: '#a2aed2', color: '#1d130c',  }}
       variant="contained"
       onClick={handleOpenModal}
     >

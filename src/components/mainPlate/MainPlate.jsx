@@ -4,44 +4,57 @@ import { useSelector } from 'react-redux'
 import TransactionButton from '../TransactionButton/TransactionButton'
 import { mainText, mainBackgroundColor } from '../../constants/styles'
 const MainPlate = () => {
-  const moneyAmount = useSelector((state) => state.transaction)
+   const moneyAmount = useSelector((state) =>
+    parseFloat(state.transaction.money)
+  )
 
+  console.log(moneyAmount)
   return (
     <Box
       sx={{
         display: 'flex',
-        width: '500px',
+        width: ['270px', '500px'],
         color: mainText,
         backgroundColor: mainBackgroundColor,
-        height: '300px',
-        padding: '25px 100px 75px',
-        margin: '25px auto',
+        height: ['500px', '300px'],
+        padding: ['15px ', '25px 50px 50px'],
+        margin: ['0 auto', '0'],
         borderRadius: '10px',
-        gap: '50px',
+        gap: ['5px', '20px', '50px'],
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'space-between',
       }}
     >
-      <Typography variant="h4">Expense Tracker</Typography>
-      <Box
-        sx={{
-          width: '200px',
-        }}
-      >
-        <TransactionButton />
-      </Box>
+      <Typography variant="h5">Expense Tracker</Typography>
+
       <Box
         sx={{
           display: 'flex',
-          margin: '20px',
-          border: '3px solid black',
-          padding: '20px',
+          border: '2px solid black',
+          padding: '10px 50px ',
           borderRadius: '10px',
           gap: '10px',
+          flexDirection: 'column',
         }}
       >
-        <Typography variant="h4">Total: {moneyAmount}</Typography>
+        <Typography
+          sx={{
+            fontSize: '22px',
+          }}
+        >
+          Total:
+        </Typography>
+
+        <Typography
+          sx={{
+            fontSize: '22px',
+          }}
+        >
+          {moneyAmount} $
+        </Typography>
       </Box>
+      <TransactionButton />
     </Box>
   )
 }

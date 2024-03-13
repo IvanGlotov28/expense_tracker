@@ -15,7 +15,13 @@ import { GlobalContext } from '../../App'
 import { formLabelStyles, formBoxesStyles } from '../../constants/styles'
 import FormCheckboxes from './FormCheckboxes'
 import ErrorDialog from './ErrorDialog'
-import { spending, income } from '../../redux/slices/transactionSlice'
+import {
+  spending,
+  income,
+  newDescription,
+} from '../../redux/slices/transactionSlice'
+import { addNewTransaction } from '../../redux/slices/transactionListSlice'
+import createNewTransaction from '../../utils/createNewTransaction'
 
 const NewTransactionForm = () => {
   const { isOpen, setIsOpen } = useContext(GlobalContext)
@@ -23,8 +29,8 @@ const NewTransactionForm = () => {
   const { moneyAmount, setMoneyAmount } = useContext(GlobalContext)
   const { description, setDescription } = useContext(GlobalContext)
   const dispatch = useDispatch()
-  const count = useSelector((state) => state)
-  console.log(count)
+  const transaction = useSelector((state) => state)
+  console.log(transaction)
   const [showError, setShowError] = useState(false)
 
   const handleCloseClick = (value) => {
@@ -66,18 +72,36 @@ const NewTransactionForm = () => {
           } else {
             const formData = new FormData(event.currentTarget)
             const formJson = Object.fromEntries(formData.entries())
-            const money = formJson.money
+            const money = parseFloat(formJson.money)
             const description = formJson.description
             console.log(transactionType)
+            console.log(money)
 
             setMoneyAmount(money)
             setDescription(description)
             setTransactionType(transactionType)
 
-            transactionType === 'spending'
-              ? dispatch(spending(money))
-              : dispatch(income(money))
+            dispatch(newDescription({ description }))
+       
+            let totalMoney
+            
+            if (transactionType === 'spending') {
+              dispatch(spending(money))
+              totalMoney = transaction.transaction.money - money
+            } else if (transactionType === 'income') {
+              dispatch(income(money))
+              totalMoney = transaction.transaction.money + money
+            }
 
+            const newTransaction = createNewTransaction(
+              money,
+              description,
+              transactionType,
+              totalMoney
+            )
+          
+            dispatch(addNewTransaction(newTransaction))
+    
             handleCloseClick(money)
           }
         },
