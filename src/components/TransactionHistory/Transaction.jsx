@@ -4,7 +4,6 @@ import {
   AccordionSummary,
   Box,
   Divider,
-  Paper,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
@@ -75,10 +74,12 @@ const Transaction = (transaction) => {
       >
         <Box
           sx={{
-            maxWidth: '300px',
+            maxWidth: ['150px', '240px'],
+            // backgroundColor: 'pink',
             fontSize: '20px',
-            overflow: 'auto',
             padding: '10px',
+            wordWrap: 'break-word',
+            textAlign: 'start',
           }}
         >
           {description}

@@ -4,14 +4,15 @@ import './App.css'
 import MainPlate from './components/mainPlate/MainPlate'
 import NewTransactionForm from './components/NewTransactionForm/NewTransactionForm'
 import TransactionHistory from './components/TransactionHistory/TransactionHistory'
+import maxDescriptionLength from './constants/constants'
 
 export const GlobalContext = createContext()
-
 function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [transactionType, setTransactionType] = useState('')
   const [moneyAmount, setMoneyAmount] = useState('')
   const [description, setDescription] = useState('')
+  const [descriptionLength, setDescriptionLength] = useState('')
 
   return (
     <div className="App">
@@ -25,6 +26,9 @@ function App() {
           setMoneyAmount,
           description,
           setDescription,
+          descriptionLength,
+          setDescriptionLength,
+          maxDescriptionLength,
         }}
       >
         <Container

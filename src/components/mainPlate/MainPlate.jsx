@@ -8,7 +8,6 @@ const MainPlate = () => {
     parseFloat(state.transaction.money)
   )
 
-  console.log(moneyAmount)
   return (
     <Box
       sx={{

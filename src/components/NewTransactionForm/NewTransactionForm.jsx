@@ -6,15 +6,17 @@ import {
   Dialog,
   DialogTitle,
   Button,
+  Typography,
+  Snackbar,
 } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 
 import CloseIcon from '@mui/icons-material/Close'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { GlobalContext } from '../../App'
 import { formLabelStyles, formBoxesStyles } from '../../constants/styles'
 import FormCheckboxes from './FormCheckboxes'
-import ErrorDialog from './ErrorDialog'
+import ErrorCheckboxSnackbar from './ErrorCheckboxSnackbar'
 import {
   spending,
   income,
@@ -22,16 +24,32 @@ import {
 } from '../../redux/slices/transactionSlice'
 import { addNewTransaction } from '../../redux/slices/transactionListSlice'
 import createNewTransaction from '../../utils/createNewTransaction'
+import AlertDescriptionSnackbar from './AlertDescriptionSnackbar'
 
 const NewTransactionForm = () => {
-  const { isOpen, setIsOpen } = useContext(GlobalContext)
-  const { transactionType, setTransactionType } = useContext(GlobalContext)
-  const { moneyAmount, setMoneyAmount } = useContext(GlobalContext)
-  const { description, setDescription } = useContext(GlobalContext)
+  const {
+    isOpen,
+    setIsOpen,
+    transactionType,
+    setTransactionType,
+    moneyAmount,
+    setMoneyAmount,
+    description,
+    setDescription,
+    descriptionLength,
+    setDescriptionLength,
+    maxDescriptionLength,
+  } = useContext(GlobalContext)
+
   const dispatch = useDispatch()
   const transaction = useSelector((state) => state)
-  console.log(transaction)
+
   const [showError, setShowError] = useState(false)
+
+  const handleDescriptionLengthChange = (event) => {
+    setDescription(event.target.value)
+    setDescriptionLength(description.length)
+  }
 
   const handleCloseClick = (value) => {
     if (!value) {
@@ -39,6 +57,7 @@ const NewTransactionForm = () => {
     } else {
       setIsOpen(false)
       setTransactionType('')
+      setDescription('')
     }
   }
 
@@ -82,9 +101,9 @@ const NewTransactionForm = () => {
             setTransactionType(transactionType)
 
             dispatch(newDescription({ description }))
-       
+
             let totalMoney
-            
+
             if (transactionType === 'spending') {
               dispatch(spending(money))
               totalMoney = transaction.transaction.money - money
@@ -99,9 +118,9 @@ const NewTransactionForm = () => {
               transactionType,
               totalMoney
             )
-          
+
             dispatch(addNewTransaction(newTransaction))
-    
+
             handleCloseClick(money)
           }
         },
@@ -128,7 +147,7 @@ const NewTransactionForm = () => {
             justifyContent: 'center',
           }}
         >
-          {showError && <ErrorDialog />}
+          {showError && <ErrorCheckboxSnackbar />}
         </Box>
         <FormCheckboxes />
 
@@ -156,10 +175,14 @@ const NewTransactionForm = () => {
             </Box>
             <Box sx={formBoxesStyles}>
               <FormLabel sx={formLabelStyles}>Description</FormLabel>
+              <AlertDescriptionSnackbar />
               <TextField
                 placeholder="Enter a description "
                 id="description"
                 name="description"
+                inputProps={{ maxLength: maxDescriptionLength }}
+                onChange={handleDescriptionLengthChange}
+                value={description}
               />
             </Box>
           </Box>
